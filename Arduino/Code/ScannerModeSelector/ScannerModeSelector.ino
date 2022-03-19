@@ -11,6 +11,9 @@
   #define MODE_SIX          5
   #define SCANNER_ON        6
   #define SCANNER_OFF       7
+  #define SPEED_DOWN        8
+  #define SPEED_UP          9
+  #define INITIALISE       10
   
   #define I2C_SCANNER_ADDRESS 9
   
@@ -24,12 +27,19 @@
                     SCANNER_OFF};
   
   int modeIndex = 0;
+
+  DigitalPin RESET(14);            // A0
+  DigitalPin DECREASE_SPEED(15);   // A1
+  DigitalPin MODE_SW(16);          // A2
+  DigitalPin INCREASE_SPEED(17);   // A3
   
-  DigitalPin MODE_SW(16);    // A2
     
   void setup() {
   
      MODE_SW. beginPULLUP();  
+     INCREASE_SPEED.beginPULLUP();
+     DECREASE_SPEED.beginPULLUP();
+     RESET.beginPULLUP();
   
      Wire.begin();  
   }
@@ -54,6 +64,30 @@
   
           if(++modeIndex == 8) modeIndex = 0;
         }
+    }
+
+    if (!DECREASE_SPEED.readState())
+    {
+        delay(500);        
+        
+        sendScannerMode(SPEED_DOWN); 
+          
+    }
+
+    if (!INCREASE_SPEED.readState())
+    {
+        delay(500);        
+        
+        sendScannerMode(SPEED_UP); 
+          
+    }
+
+    if (!RESET.readState())
+    {
+        delay(500);        
+        
+        sendScannerMode(INITIALISE); 
+          
     }
   
   }

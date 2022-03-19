@@ -199,26 +199,46 @@
   }
 
   void receiveEvent() {
-      byte m;
-        Serial.println("Receive");
-      
+      static byte m;  // Mode
+      static byte ms; // Mode/Speed
+      static byte s = 30; // Speed
+        
         while (Wire.available()) { // slave may send less than requested
-          m = Wire.read(); // receive a byte as character
+          ms = Wire.read(); // receive a byte as character
         }
         
-        switch (m)
+        switch (ms)
         {
           case 6: // SCANNER ON
-                  setKittMode(6, 25);
-                   break;          
+                  setKittMode(6, s);
+                  break;          
     
-          case 7: // FULL BEAM OFF
+          case 7: // SCANNER OFF
           
-                  setKittMode(7, 30);                  
-                  break;                   
+                  setKittMode(7, s);                  
+                  break;
+
+          case 8: // DECREASE SPEED
+                  s += 10;
+                  if(s > 100) s = 100;
+                  setKittMode(m, s);                  
+                  break; 
+
+          case 9: // INCREASE SPEED
+                  s -= 10;
+                  if(s < 20) s = 20;
+                  setKittMode(m, s);                  
+                  break; 
+  
+          case 10: // RESET
+                  m = 2;
+                  s  = 30;
+                  setKittMode(m, s);
+                  break;
             
           default:  
-                 setKittMode(m, 30);
+                  m = ms;
+                  setKittMode(m, s);
           
      }      
   }
