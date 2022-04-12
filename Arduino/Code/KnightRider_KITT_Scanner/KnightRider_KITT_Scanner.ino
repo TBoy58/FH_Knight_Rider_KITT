@@ -40,7 +40,7 @@
       
       LEDoff();
   
-      setKittMode(7, 30);
+      setKittMode(7, 40);
   
       Timer1.initialize(64);  // 15625 Hz => 8bit PWM 61 Hz refresh rate
       Timer1.attachInterrupt(myIrq);    
@@ -201,7 +201,7 @@
   void receiveEvent() {
       static byte m;  // Mode
       static byte ms; // Mode/Speed
-      static byte s = 30; // Speed
+      static byte s = 40; // Speed
         
         while (Wire.available()) { // slave may send less than requested
           ms = Wire.read(); // receive a byte as character
